@@ -80,43 +80,6 @@ setup_base() {
 	done
 	reset_color
 }
-
-## Setup OMZ and Termux Configs
-setup_omz() {
-	# backup previous termux and omz files
-	echo -e ${RED}"[*] Setting up OMZ and termux configs..."
-	omz_files=(.oh-my-zsh .termux .zshrc)
-	for file in "${omz_files[@]}"; do
-		echo -e ${CYAN}"\n[*] Backing up $file..."
-		if [[ -f "$HOME/$file" || -d "$HOME/$file" ]]; then
-			{ reset_color; mv -u ${HOME}/${file}{,.old}; }
-		else
-			echo -e ${MAGENTA}"\n[!] $file Doesn't Exist."			
-		fi
-	done
-	# installing omz
-	echo -e ${CYAN}"\n[*] Installing Oh-my-zsh... \n"
-	{ reset_color; git clone https://github.com/robbyrussell/oh-my-zsh.git --depth 1 $HOME/.oh-my-zsh; }
-	cp $HOME/.oh-my-zsh/templates/zshrc.zsh-template $HOME/.zshrc
-	sed -i -e 's/ZSH_THEME=.*/ZSH_THEME="aditya"/g' $HOME/.zshrc
-	sed -i -e 's|# export PATH=.*|export PATH=$HOME/.local/bin:$PATH|g' $HOME/.zshrc
-	# ZSH theme
-	cat > $HOME/.oh-my-zsh/custom/themes/aditya.zsh-theme <<- _EOF_
-		# Default OMZ theme
-
-		if [[ "\$USER" == "root" ]]; then
-		  PROMPT="%(?:%{\$fg_bold[red]%}%{\$fg_bold[yellow]%}%{\$fg_bold[red]%} :%{\$fg_bold[red]%} )"
-		  PROMPT+='%{\$fg[cyan]%}  %c%{\$reset_color%} \$(git_prompt_info)'
-		else
-		  PROMPT="%(?:%{\$fg_bold[red]%}%{\$fg_bold[green]%}%{\$fg_bold[yellow]%} :%{\$fg_bold[red]%} )"
-		  PROMPT+='%{\$fg[cyan]%}  %c%{\$reset_color%} \$(git_prompt_info)'
-		fi
-
-		ZSH_THEME_GIT_PROMPT_PREFIX="%{\$fg_bold[blue]%}  git:(%{\$fg[red]%}"
-		ZSH_THEME_GIT_PROMPT_SUFFIX="%{\$reset_color%} "
-		ZSH_THEME_GIT_PROMPT_DIRTY="%{\$fg[blue]%}) %{\$fg[yellow]%}✗"
-		ZSH_THEME_GIT_PROMPT_CLEAN="%{\$fg[blue]%})"
-	_EOF_
 	# Append some aliases
 	cat >> $HOME/.zshrc <<- _EOF_
 		#------------------------------------------
